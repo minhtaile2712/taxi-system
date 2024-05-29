@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TaxiSystem.Models;
+using TaxiSystem.Models.Drivers;
 
 var builder = WebApplication.CreateBuilder(args);
 

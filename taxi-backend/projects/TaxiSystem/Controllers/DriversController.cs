@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TaxiSystem.Models;
 using TaxiSystem.Dtos;
+using TaxiSystem.Models.Drivers;
 
 namespace TaxiSystem.Controllers
 {
-    [Route("api/[controller]")]
+  [Route("api/[controller]")]
     [ApiController]
     public class DriversController : ControllerBase
     {

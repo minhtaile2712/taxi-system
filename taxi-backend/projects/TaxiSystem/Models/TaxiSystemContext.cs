@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TaxiSystem.Models.Customers;
+using TaxiSystem.Models.Drivers;
 
 namespace TaxiSystem.Models;
 

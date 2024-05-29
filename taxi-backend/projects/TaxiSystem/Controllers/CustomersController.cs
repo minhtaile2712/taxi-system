@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TaxiSystem.Dtos;
 using TaxiSystem.Models;
+using TaxiSystem.Models.Customers;
 
 namespace TaxiSystem.Controllers;
 
