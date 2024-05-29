@@ -64,15 +64,15 @@ public class DriversController : ControllerBase
     }
 
     /// <summary>
-    /// Update driver location
+    /// Update driver
     /// </summary>
     /// <param name="id"></param>
-    /// <param name="location"></param>
+    /// <param name="input"></param>
     /// <returns></returns>
-    [HttpPost("{id}/location")]
-    public async Task<IActionResult> UpdateDriverLocation(long id, LocationDto location)
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> UpdateDriver(long id, DriverUpdateDto input)
     {
-        var result = await _driversService.UpdateDriverLocationAsync(id, location);
+        var result = await _driversService.UpdateDriverAsync(id, input);
         return (result == null) ? NotFound() : NoContent();
     }
 
@@ -85,6 +85,19 @@ public class DriversController : ControllerBase
     public async Task<IActionResult> DeleteDriverById(long id)
     {
         var result = await _driversService.DeleteByIdAsync(id);
+        return (result == null) ? NotFound() : NoContent();
+    }
+
+    /// <summary>
+    /// Update driver location
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="location"></param>
+    /// <returns></returns>
+    [HttpPost("{id}/location")]
+    public async Task<IActionResult> UpdateDriverLocation(long id, LocationDto location)
+    {
+        var result = await _driversService.UpdateDriverLocationAsync(id, location);
         return (result == null) ? NotFound() : NoContent();
     }
 

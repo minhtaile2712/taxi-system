@@ -4,7 +4,12 @@ namespace TaxiSystem.Models.Bookings;
 
 public class Booking
 {
-    public Customer Customer { get; set; }
+    public long Id { get; set; }
+
+    public long CustomerId { get; set; }
+    public Customer Customer { get; set; } = null!;
+
+    protected Booking() { }
 
     public Booking(Customer customer)
     {

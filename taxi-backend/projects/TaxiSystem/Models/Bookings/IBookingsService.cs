@@ -4,5 +4,5 @@ namespace TaxiSystem.Models.Bookings;
 
 public interface IBookingsService
 {
-    Task<BookingDto> MakeABookingAsync(BookingMakeDto input);
+    Task<BookingDto?> MakeABookingAsync(BookingMakeDto input);
 }

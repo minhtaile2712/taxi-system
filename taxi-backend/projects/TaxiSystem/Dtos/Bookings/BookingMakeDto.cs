@@ -2,4 +2,5 @@
 
 public class BookingMakeDto
 {
+    public long CustomerId { get; set; }
 }
