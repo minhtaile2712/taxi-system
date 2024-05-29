@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.Geometries;
 using TaxiSystem.Dtos;
+using TaxiSystem.Dtos.Customers;
 
 namespace TaxiSystem.Models.Customers;
 

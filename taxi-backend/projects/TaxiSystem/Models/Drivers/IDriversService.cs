@@ -1,4 +1,5 @@
 ﻿using TaxiSystem.Dtos;
+using TaxiSystem.Dtos.Drivers;
 
 namespace TaxiSystem.Models.Drivers;
 
