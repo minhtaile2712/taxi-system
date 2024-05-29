@@ -1,6 +1,13 @@
+using Microsoft.EntityFrameworkCore;
+using TaxiSystem.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddDbContext<TaxiSystemContext>(options => options
+  .UseNpgsql(builder.Configuration.GetConnectionString("TaxiSystem"), o => o.UseNetTopologySuite()));
+builder.Services.AddScoped<IDriversService, DriversService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
