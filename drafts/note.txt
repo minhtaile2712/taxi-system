@@ -1,0 +1,148 @@
+Customers app
+PhoneNumber
+()
+Address (relative) (optional)
+Location (long, lat) (absolute)
+
+Use cases:
+BookByPhone()
+  Request: customerId, Address
+BookByApp()
+  Request: customerId, CurrentLocation
+##### BookLater ()
+#####  Request: customerId, Address, (CurrentLocation), Time
+
+Event:
+  Driver Accepted: Receive driver info
+
+
+
+
+
+
+
+
+
+
+Drivers app
+string PhoneNumber
+string Name
+string AvatarUrl
+Id (server generated)
+CurrentLocation
+
+
+Publish Event()
+  CurrentLocation (location, time)
+Accept()
+Refuse()
+
+Subscribe to events
+  NewBookingEvent
+  (BookingSuspended): optional
+
+
+CallCenter
+CreateNewBookingByPhone():
+  Request: Phone, Address
+SetDistanceBoundary():
+  Request: n km
+Optional:
+  Map: Active driver, Customer Waiting
+
+
+Server:
+CreateCustomerAccount()
+  Request: PhoneNumber, VIP?
+AddDriver()
+  Request: PhoneNumber, Name, AvatarUrl
+API:
+  AccountManagement (Customer, Driver) (Postgres)
+  BookingManagement (ViaPhone, ViaApp)
+    GetLocationFromAddress (using 3rd party API: Google Maps, Mapbox)
+  LocationManagement (DriverLocation) (Postgres/MongoDb, Redis)
+    SaveDriverNewestLocation
+    GetDriversInBoundary(i ,n km)
+
+
+
+
+
+
+
+
+
+
+
+
+
+Drafts:
+DistanceBoundarySet: 5km
+
+DriverA
+  Distance: 2km
+DriverB
+  Distance: 3km
+DriverC
+  Distance: 6km
+
+
+
+UI
+Customers => LoginPage: PhoneNumber => LandingPage
+Drivers => LoginPage: PhoneNumber => LandingPage
+Center => No LoginPage
+
+
+
+
+Tables:
+Customers
+Drivers
+Bookings -> Customer, State
+  Driver A, Driver B
+
+
+Customer LandingPage:
+Simulator:
+  SetLocation(Long, Lat) (map input)
+  Interval5s: SendLocationToServer
+Button: Book!
+
+
+Customer WaitingPage:
+  Receive Event:
+    Booking Accepted (Driver tap Accept!) <= DriverInfo
+    All Driver Denied
+Booking In Progress
+  Button: End
+
+
+
+
+Driver LandingPage:
+Simulator:
+  SetLocation(Long, Lat) (map input)
+  Interval5s: SendLocationToServer
+
+Receive Event: NewBooking => Accept/Deny?
+Booking In Progress
+  Button: End
+
+
+
+Center
+Button: BookForCustomer(PhoneNumber, Location (form, map) )
+
+Table: GetAllBooking
+  In Progress Booking
+  Finished Booking
+
+Bookig.State
+
+
+https://blog.logrocket.com/integrating-next-js-signalr/
+https://learn.microsoft.com/en-us/aspnet/core/tutorials/signalr?view=aspnetcore-8.0&WT.mc_id=dotnet-35129-website&tabs=visual-studio
+https://docs.google.com/document/d/14sIRUx-7Cnf9tBDoUTSFhXR5aahVC0rZjfgY5sQ-mAM/edit
+https://medium.com/aspnetrun/microservices-architecture-on-net-3b4865eea03f
+https://refactoring.guru/design-patterns/structural-patterns
