@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TaxiSystem.Dtos;
 using TaxiSystem.Dtos.Customers;
-using TaxiSystem.Models;
 using TaxiSystem.Models.Customers;
 
 namespace TaxiSystem.Controllers;
@@ -10,14 +9,10 @@ namespace TaxiSystem.Controllers;
 [ApiController]
 public class CustomersController : ControllerBase
 {
-    private readonly TaxiSystemContext _context;
     private readonly ICustomersService _customersService;
 
-    public CustomersController(
-        TaxiSystemContext context,
-        ICustomersService customersService)
+    public CustomersController(ICustomersService customersService)
     {
-        _context = context;
         _customersService = customersService;
     }
 
