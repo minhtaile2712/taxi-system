@@ -24,6 +24,6 @@ public class BookingsController : ControllerBase
     public async Task<ActionResult<BookingDto>> MakeABooking(BookingMakeDto input)
     {
         var result = await _bookingsService.MakeABookingAsync(input);
-        return CreatedAtAction(nameof(MakeABooking), new { id = result.Id }, result);
+        return (result == null) ? NotFound() : CreatedAtAction(nameof(MakeABooking), new { id = result.Id }, result);
     }
 }
