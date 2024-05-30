@@ -9,7 +9,7 @@ public class Message
     public DateTimeOffset SentTime { get; set; }
 }
 
-public class MyHub : Hub
+public class TaxiHub : Hub
 {
     private static readonly List<Message> MessageHistory = new();
 

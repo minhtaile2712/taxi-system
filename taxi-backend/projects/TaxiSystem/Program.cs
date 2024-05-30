@@ -54,6 +54,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapHub<MyHub>("/hub");
+app.MapHub<TaxiHub>("/hub");
 
 app.Run();
