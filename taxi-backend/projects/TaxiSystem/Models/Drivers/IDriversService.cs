@@ -7,7 +7,10 @@ public interface IDriversService
 {
     Task<DriverDto> AddAsync(DriverCreateDto input);
     Task<List<DriverDto>> GetDriversAsync();
+
     Task<List<DriverDto>> FindNearbyDriversAsync(FindNearbyDriversDto input);
+    Task<List<Driver>> GetNearbyDriversAsync(double centerPointLong, double centerPointLat, double distanceInMeters);
+
     Task<DriverDto?> GetByIdAsync(long id);
     Task<DriverDto?> UpdateDriverAsync(long id, DriverUpdateDto input);
     Task<DriverDto?> DeleteByIdAsync(long id);

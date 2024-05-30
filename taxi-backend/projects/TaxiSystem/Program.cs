@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using TaxiSystem.Hubs;
 using TaxiSystem.Models;
+using TaxiSystem.Models.Bookings;
+using TaxiSystem.Models.Customers;
 using TaxiSystem.Models.Drivers;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<TaxiSystemContext>(options => options
   .UseNpgsql(builder.Configuration.GetConnectionString("TaxiSystem"), o => o.UseNetTopologySuite()));
+builder.Services.AddScoped<IBookingsService, BookingsService>();
+builder.Services.AddScoped<ICustomersService, CustomersService>();
 builder.Services.AddScoped<IDriversService, DriversService>();
 
 builder.Services.AddSignalR();

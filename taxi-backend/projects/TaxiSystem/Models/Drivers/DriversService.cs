@@ -33,8 +33,15 @@ public class DriversService : IDriversService
 
     public async Task<List<DriverDto>> FindNearbyDriversAsync(FindNearbyDriversDto input)
     {
-        var centerPoint = new Point(input.Long, input.Lat) { SRID = 4326 };
-        var distanceInDegrees = MetersToDegrees(input.DistanceInMeters);
+        var nearbyDrivers = await GetNearbyDriversAsync(input.Long, input.Lat, input.DistanceInMeters);
+        var result = nearbyDrivers.Select(MapDriverToDto).ToList();
+        return result;
+    }
+
+    public async Task<List<Driver>> GetNearbyDriversAsync(double centerPointLong, double centerPointLat, double distanceInMeters)
+    {
+        var centerPoint = new Point(centerPointLong, centerPointLat) { SRID = 4326 };
+        var distanceInDegrees = MetersToDegrees(distanceInMeters);
 
         var nearbyDrivers = await _context.Drivers
             .Where(d => d.IsActive)
@@ -42,8 +49,7 @@ public class DriversService : IDriversService
             .OrderBy(d => d.Location!.Distance(centerPoint))
             .ToListAsync();
 
-        var result = nearbyDrivers.Select(MapDriverToDto).ToList();
-        return result;
+        return nearbyDrivers;
     }
 
     public async Task<DriverDto?> GetByIdAsync(long id)

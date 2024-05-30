@@ -1,4 +1,8 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using TaxiSystem.Dtos;
+using TaxiSystem.Models.Bookings;
+using TaxiSystem.Models.Customers;
+using TaxiSystem.Models.Drivers;
 
 namespace TaxiSystem.Hubs;
 
@@ -11,7 +15,22 @@ public class Message
 
 public class TaxiHub : Hub
 {
+    private readonly IDriversService _driversService;
+    private readonly ICustomersService _customersService;
+    private readonly IBookingsService _bookingsService;
+
+
     private static readonly List<Message> MessageHistory = new();
+
+    public TaxiHub(
+        IDriversService driversService,
+        ICustomersService customersService,
+        IBookingsService bookingsService)
+    {
+        _driversService = driversService;
+        _customersService = customersService;
+        _bookingsService = bookingsService;
+    }
 
     public async Task SendMessageToOthers(string content)
     {
@@ -40,5 +59,30 @@ public class TaxiHub : Hub
             SentTime = sentTime
         });
         return sentTime;
+    }
+
+    public async Task UpdateDriverLocation(long driverId, double longitude, double latitude)
+    {
+        await _driversService.UpdateDriverLocationAsync(driverId, new LocationDto { Long = longitude, Lat = latitude });
+    }
+
+    public async Task UpdateCustomerLocation(long customerId, double longitude, double latitude)
+    {
+        await _customersService.UpdateCustomerLocationAsync(customerId, new LocationDto { Long = longitude, Lat = latitude });
+    }
+
+    public async Task DriverAccepted(long bookingId, long driverId)
+    {
+        await Clients.Others.SendAsync("DriverAccepted", bookingId, driverId);
+    }
+
+    public async Task DriverRefused(long bookingId, long driverId, List<long> driverIds)
+    {
+        if (driverIds.Last() == driverId)
+        {
+            await _bookingsService.CancelBookingByIdAsync(bookingId);
+            await Clients.Others.SendAsync("BookingCancelled", bookingId);
+        }
+        await Clients.Others.SendAsync("DriverRefused", bookingId, driverId);
     }
 }
