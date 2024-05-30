@@ -9,10 +9,13 @@ public class Booking
     public long CustomerId { get; set; }
     public Customer Customer { get; set; } = null!;
 
+    public BookingState State { get; set; }
+
     protected Booking() { }
 
     public Booking(Customer customer)
     {
         Customer = customer;
+        State = BookingState.Booked;
     }
 }
