@@ -102,6 +102,18 @@ public class DriversController : ControllerBase
     }
 
     /// <summary>
+    /// Get driver by phone number
+    /// </summary>
+    /// <param name="phoneNumber"></param>
+    /// <returns></returns>
+    [HttpGet("by-phone/{phoneNumber}")]
+    public async Task<DriverDto?> GetDriverByPhone(string phoneNumber)
+    {
+        var result = await _driversService.GetDriverByPhoneAsync(phoneNumber);
+        return result;
+    }
+
+    /// <summary>
     /// Test
     /// </summary>
     /// <returns></returns>

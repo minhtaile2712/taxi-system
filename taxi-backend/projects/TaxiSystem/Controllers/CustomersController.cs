@@ -76,4 +76,16 @@ public class CustomersController : ControllerBase
         var result = await _customersService.DeleteByIdAsync(id);
         return (result == null) ? NotFound() : NoContent();
     }
+
+    /// <summary>
+    /// Get customer by phone number
+    /// </summary>
+    /// <param name="phoneNumber"></param>
+    /// <returns></returns>
+    [HttpGet("by-phone/{phoneNumber}")]
+    public async Task<CustomerDto?> GetCustomerByPhone(string phoneNumber)
+    {
+        var result = await _customersService.GetCustomerByPhoneAsync(phoneNumber);
+        return result;
+    }
 }

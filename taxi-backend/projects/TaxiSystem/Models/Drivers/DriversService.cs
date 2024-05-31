@@ -17,6 +17,12 @@ public class DriversService : IDriversService
 
     public async Task<DriverDto> AddAsync(DriverCreateDto input)
     {
+        var existingDriver = await _context.Drivers
+            .Where(c => c.PhoneNumber == input.PhoneNumber)
+            .FirstOrDefaultAsync();
+        if (existingDriver != null)
+            return MapDriverToDto(existingDriver);
+
         var driver = new Driver(input.PhoneNumber, input.Name, input.AvatarUrl);
         _context.Drivers.Add(driver);
         await _context.SaveChangesAsync();
@@ -59,6 +65,21 @@ public class DriversService : IDriversService
         return MapDriverToDto(driver);
     }
 
+    public async Task<DriverDto?> UpdateDriverLocationAsync(long id, LocationDto location)
+    {
+        DriverDto? result = null;
+
+        var driver = await _context.Drivers.FindAsync(id);
+        if (driver != null)
+        {
+            driver.Location = new Point(location.Long, location.Lat) { SRID = 4326 };
+            await _context.SaveChangesAsync();
+            result = MapDriverToDto(driver);
+        }
+
+        return result;
+    }
+
     public async Task<DriverDto?> UpdateDriverAsync(long id, DriverUpdateDto input)
     {
         DriverDto? result = null;
@@ -92,19 +113,13 @@ public class DriversService : IDriversService
         return result;
     }
 
-    public async Task<DriverDto?> UpdateDriverLocationAsync(long id, LocationDto location)
+    public async Task<DriverDto?> GetDriverByPhoneAsync(string phoneNumber)
     {
-        DriverDto? result = null;
-
-        var driver = await _context.Drivers.FindAsync(id);
-        if (driver != null)
-        {
-            driver.Location = new Point(location.Long, location.Lat) { SRID = 4326 };
-            await _context.SaveChangesAsync();
-            result = MapDriverToDto(driver);
-        }
-
-        return result;
+        var driver = await _context.Drivers
+            .Where(c => c.PhoneNumber == phoneNumber)
+            .FirstOrDefaultAsync();
+        if (driver == null) return null;
+        return MapDriverToDto(driver);
     }
 
     public Task<double[]> Test()
