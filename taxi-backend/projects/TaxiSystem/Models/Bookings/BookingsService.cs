@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using TaxiSystem.Dtos;
+using Microsoft.EntityFrameworkCore;
 using TaxiSystem.Dtos.Bookings;
 using TaxiSystem.Hubs;
 using TaxiSystem.Models.Drivers;
@@ -29,41 +29,67 @@ public class BookingsService : IBookingsService
         Radius = radius;
     }
 
-    public async Task<BookingDto?> MakeABookingAsync(BookingMakeDto input)
+    public async Task<BookingDto?> CreateBookingAsync(BookingCreateDto input)
     {
         var customer = await _context.Customers.FindAsync(input.CustomerId);
         if (customer == null || customer.Location == null) return null;
 
-        var booking = new Booking(customer);
+        var drivers = await _driversService.GetNearbyDriversAsync(customer.Location.X, customer.Location.Y, Radius);
+        if (!drivers.Any()) return null;
+
+        var booking = new Booking(customer, drivers);
+
+        var driverIdToNotify = booking.NotifyNextDriver();
+        await _hubContext.Clients.All.SendAsync("NewBooking", booking.Id, driverIdToNotify);
+
         _context.Bookings.Add(booking);
         await _context.SaveChangesAsync();
-
-        var longitude = customer.Location.X;
-        var latitude = customer.Location.Y;
-        var location = new LocationDto { Long = longitude, Lat = latitude };
-
-        var drivers = await _driversService.GetNearbyDriversAsync(longitude, latitude, Radius);
-        var driverIds = drivers.Select(d => d.Id).ToList();
-
-        await _hubContext.Clients.All.SendAsync("NewBooking", booking.Id, driverIds, customer.Id, location);
 
         var result = MapBookingToDto(booking);
         return result;
     }
 
-    public async Task<BookingDto?> CancelBookingByIdAsync(long id)
+    public async Task AcceptBookingAsync(BookingAcceptDto input)
     {
-        BookingDto? result = null;
+        var driverId = input.DriverId;
 
-        var booking = await _context.Bookings.FindAsync(id);
-        if (booking != null)
+        var booking = await _context.Bookings
+            .Where(b => b.Id == input.BookingId)
+            .Include(b => b.BookingDrivers)
+            .FirstOrDefaultAsync();
+
+        if (booking == null) return;
+        if (!booking.BookingDrivers.Select(d => d.DriverId).Contains(driverId)) return;
+
+        booking.Accept(driverId);
+        await _context.SaveChangesAsync();
+
+        await _hubContext.Clients.All.SendAsync("AcceptBooking", booking.Id, booking.CustomerId, driverId);
+    }
+
+    public async Task DenyBookingAsync(BookingDenyDto input)
+    {
+        var driverId = input.DriverId;
+
+        var booking = await _context.Bookings
+            .Where(b => b.Id == input.BookingId)
+            .Include(b => b.BookingDrivers)
+            .FirstOrDefaultAsync();
+
+        if (booking == null) return;
+        if (!booking.BookingDrivers.Select(d => d.DriverId).Contains(driverId)) return;
+
+        var driverIdToNotify = booking.NotifyNextDriver(driverId);
+        if (driverIdToNotify == null)
         {
-            booking.State = BookingState.Cancelled;
+            booking.State = BookingState.Denied;
+            await _hubContext.Clients.All.SendAsync("BookingDenied", booking.Id, booking.CustomerId);
             await _context.SaveChangesAsync();
-            result = MapBookingToDto(booking);
+            return;
         }
 
-        return result;
+        await _context.SaveChangesAsync();
+        await _hubContext.Clients.All.SendAsync("NewBooking", booking.Id, driverIdToNotify);
     }
 
     private static BookingDto MapBookingToDto(Booking d)

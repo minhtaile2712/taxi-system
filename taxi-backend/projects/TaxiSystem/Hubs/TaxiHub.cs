@@ -70,19 +70,4 @@ public class TaxiHub : Hub
     {
         await _customersService.UpdateCustomerLocationAsync(customerId, new LocationDto { Long = longitude, Lat = latitude });
     }
-
-    public async Task DriverAccepted(long bookingId, long driverId)
-    {
-        await Clients.Others.SendAsync("DriverAccepted", bookingId, driverId);
-    }
-
-    public async Task DriverRefused(long bookingId, long driverId, List<long> driverIds)
-    {
-        if (driverIds.Last() == driverId)
-        {
-            await _bookingsService.CancelBookingByIdAsync(bookingId);
-            await Clients.Others.SendAsync("BookingCancelled", bookingId);
-        }
-        await Clients.Others.SendAsync("DriverRefused", bookingId, driverId);
-    }
 }
