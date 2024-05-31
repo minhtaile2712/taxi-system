@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetTopologySuite.Geometries;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -12,9 +13,11 @@ using TaxiSystem.Models;
 namespace TaxiSystem.Migrations
 {
     [DbContext(typeof(TaxiSystemContext))]
-    partial class TaxiSystemContextModelSnapshot : ModelSnapshot
+    [Migration("20240531130427_Add_Booking_Driver")]
+    partial class Add_Booking_Driver
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

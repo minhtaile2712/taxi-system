@@ -16,6 +16,16 @@ public class BookingsController : ControllerBase
     }
 
     /// <summary>
+    /// Set booking radius
+    /// </summary>
+    /// <param name="radius"></param>
+    [HttpPost("radius")]
+    public void SetDistance([FromBody] double radius)
+    {
+        _bookingsService.SetDistance(radius);
+    }
+
+    /// <summary>
     /// Make a booking
     /// </summary>
     /// <param name="input"></param>

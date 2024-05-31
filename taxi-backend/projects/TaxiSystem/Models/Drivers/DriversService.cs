@@ -17,6 +17,12 @@ public class DriversService : IDriversService
 
     public async Task<DriverDto> AddAsync(DriverCreateDto input)
     {
+        var existingDriver = await _context.Drivers
+            .Where(c => c.PhoneNumber == input.PhoneNumber)
+            .FirstOrDefaultAsync();
+        if (existingDriver != null)
+            return MapDriverToDto(existingDriver);
+
         var driver = new Driver(input.PhoneNumber, input.Name, input.AvatarUrl);
         _context.Drivers.Add(driver);
         await _context.SaveChangesAsync();
@@ -33,8 +39,15 @@ public class DriversService : IDriversService
 
     public async Task<List<DriverDto>> FindNearbyDriversAsync(FindNearbyDriversDto input)
     {
-        var centerPoint = new Point(input.Long, input.Lat) { SRID = 4326 };
-        var distanceInDegrees = MetersToDegrees(input.DistanceInMeters);
+        var nearbyDrivers = await GetNearbyDriversAsync(input.Long, input.Lat, input.DistanceInMeters);
+        var result = nearbyDrivers.Select(MapDriverToDto).ToList();
+        return result;
+    }
+
+    public async Task<List<Driver>> GetNearbyDriversAsync(double centerPointLong, double centerPointLat, double distanceInMeters)
+    {
+        var centerPoint = new Point(centerPointLong, centerPointLat) { SRID = 4326 };
+        var distanceInDegrees = MetersToDegrees(distanceInMeters);
 
         var nearbyDrivers = await _context.Drivers
             .Where(d => d.IsActive)
@@ -42,8 +55,7 @@ public class DriversService : IDriversService
             .OrderBy(d => d.Location!.Distance(centerPoint))
             .ToListAsync();
 
-        var result = nearbyDrivers.Select(MapDriverToDto).ToList();
-        return result;
+        return nearbyDrivers;
     }
 
     public async Task<DriverDto?> GetByIdAsync(long id)
@@ -51,6 +63,21 @@ public class DriversService : IDriversService
         var driver = await _context.Drivers.FindAsync(id);
         if (driver == null) return null;
         return MapDriverToDto(driver);
+    }
+
+    public async Task<DriverDto?> UpdateDriverLocationAsync(long id, LocationDto location)
+    {
+        DriverDto? result = null;
+
+        var driver = await _context.Drivers.FindAsync(id);
+        if (driver != null)
+        {
+            driver.Location = new Point(location.Long, location.Lat) { SRID = 4326 };
+            await _context.SaveChangesAsync();
+            result = MapDriverToDto(driver);
+        }
+
+        return result;
     }
 
     public async Task<DriverDto?> UpdateDriverAsync(long id, DriverUpdateDto input)
@@ -86,19 +113,13 @@ public class DriversService : IDriversService
         return result;
     }
 
-    public async Task<DriverDto?> UpdateDriverLocationAsync(long id, LocationDto location)
+    public async Task<DriverDto?> GetDriverByPhoneAsync(string phoneNumber)
     {
-        DriverDto? result = null;
-
-        var driver = await _context.Drivers.FindAsync(id);
-        if (driver != null)
-        {
-            driver.Location = new Point(location.Long, location.Lat) { SRID = 4326 };
-            await _context.SaveChangesAsync();
-            result = MapDriverToDto(driver);
-        }
-
-        return result;
+        var driver = await _context.Drivers
+            .Where(c => c.PhoneNumber == phoneNumber)
+            .FirstOrDefaultAsync();
+        if (driver == null) return null;
+        return MapDriverToDto(driver);
     }
 
     public Task<double[]> Test()
