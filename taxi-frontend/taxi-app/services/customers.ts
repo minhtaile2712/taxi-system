@@ -1,5 +1,5 @@
-import { LocationDTO } from '@/dtos/Driver.dto';
 import axios from 'axios';
+import { LocationDTO } from '../dtos/Driver.dto';
 
 const apiClient = axios.create({
     baseURL: 'https://localhost:7283/api',
@@ -8,15 +8,15 @@ const apiClient = axios.create({
     },
   });
 //get all customers
-export const getCustomers = async () => {
-    try {
-      const response = await apiClient.get('/Customers');
-      return response.data;
-    } catch (error) {
-      console.error('Failed to fetch customers:', error);
-      throw error;
-    }
-  };
+    export const getCustomers = async () => {
+        try {
+          const response = await apiClient.get('/Customers');
+          return response.data;
+        } catch (error) {
+          console.error('Failed to fetch customers:', error);
+          throw error;
+        }
+      };
 
     //get customer by id
     export const getCustomerById = async (id: number) => {
@@ -39,7 +39,7 @@ export const getCustomers = async () => {
         }
     };
     //update customer location
-    export const updateLocation = async (userId: number, location: LocationDTO): Promise<void> => {
+    export const updateLocation = async (userId: string, location: LocationDTO): Promise<void> => {
         try {
             const response =await apiClient.post(`/Customers/${userId}/location`, location);
             return response.data;
@@ -48,14 +48,14 @@ export const getCustomers = async () => {
             throw error;
         }
     };
-//add customer
-export const addCustomer = async (phoneNumber: string): Promise<any> => {
-    try {
-        console.log(phoneNumber);
-      const response = await apiClient.post('/Customers', phoneNumber);
-      return response.data;
-    } catch (error) {
-      console.error('Failed to add customer:', error);
-      throw error;
-    }
-  };
+    //add customer
+    export const addCustomer = async (phoneNumber: string): Promise<any> => {
+      try {
+          console.log(phoneNumber);
+        const response = await apiClient.post('/Customers', { phoneNumber });
+        return response.data;
+      } catch (error) {
+        console.error('Failed to add customer:', error);
+        throw error;
+      }
+    };

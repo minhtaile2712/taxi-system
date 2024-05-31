@@ -1,17 +1,21 @@
 "use client";
-import { addCustomer } from '@/services/customers';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { addCustomer } from '../../services/customers';
+import React from 'react';
+import { useRouter } from "next/navigation";
 
 interface FormValues {
   phone: string;
 }
 
 export default function LoginUser() {
+  const router = useRouter();
   const { register, handleSubmit, formState: { errors } } = useForm<FormValues>();
   const onSubmit: SubmitHandler<FormValues> = async (data: { phone: string; }) => {
     try {
       const response = await addCustomer(data.phone);
-      alert('Customer added successfully!');
+      const customerId = response.id;
+      router.push(`/?id=${customerId}`);
     } catch (err) {
       alert('Failed to add customer');
     }
