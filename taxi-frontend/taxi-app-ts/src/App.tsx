@@ -1,11 +1,13 @@
 import "./App.css";
 
-import Chat from "./Chat";
+import CustomerApp from "./CustomerApp";
+import DriverApp from "./DriverApp";
 
 function App() {
   return (
     <>
-      <Chat />
+      <CustomerApp />
+      <DriverApp />
     </>
   );
 }
