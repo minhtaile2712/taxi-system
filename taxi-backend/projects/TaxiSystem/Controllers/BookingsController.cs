@@ -20,9 +20,19 @@ public class BookingsController : ControllerBase
     /// </summary>
     /// <param name="radius"></param>
     [HttpPost("radius")]
-    public void SetDistance([FromBody] double radius)
+    public void SetRadius([FromBody] double radius)
     {
-        _bookingsService.SetDistance(radius);
+        _bookingsService.SetRadius(radius);
+    }
+
+    /// <summary>
+    /// Get booking radius
+    /// </summary>
+    /// <param name="radius"></param>
+    [HttpGet("radius")]
+    public double GetRadius([FromBody] double radius)
+    {
+        return _bookingsService.GetRadius(radius);
     }
 
     /// <summary>

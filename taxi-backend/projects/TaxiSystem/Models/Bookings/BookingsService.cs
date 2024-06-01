@@ -24,9 +24,14 @@ public class BookingsService : IBookingsService
         _hubContext = hubContext;
     }
 
-    public void SetDistance(double radius)
+    public void SetRadius(double radius)
     {
         Radius = radius;
+    }
+
+    public double GetRadius(double radius)
+    {
+        return Radius;
     }
 
     public async Task<BookingDto?> CreateBookingAsync(BookingCreateDto input)
