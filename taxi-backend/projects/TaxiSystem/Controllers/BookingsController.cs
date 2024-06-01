@@ -28,7 +28,6 @@ public class BookingsController : ControllerBase
     /// <summary>
     /// Get booking radius
     /// </summary>
-    /// <param name="radius"></param>
     [HttpGet("radius")]
     public double GetRadius()
     {
@@ -48,12 +47,36 @@ public class BookingsController : ControllerBase
     }
 
     /// <summary>
+    /// Get booking by customer
+    /// </summary>
+    /// <param name="customerId"></param>
+    /// <returns></returns>
+    [HttpGet("by-customer/{customerId}")]
+    public async Task<BookingDto?> GetBookingByCustomer([FromRoute] long customerId)
+    {
+        var result = await _bookingsService.GetBookingByCustomerAsync(customerId);
+        return result;
+    }
+
+    /// <summary>
+    /// Get booking by driver
+    /// </summary>
+    /// <param name="driverId"></param>
+    /// <returns></returns>
+    [HttpGet("by-driver/{driverId}")]
+    public async Task<BookingDto?> GetBookingByDriver([FromRoute] long driverId)
+    {
+        var result = await _bookingsService.GetBookingByDriverAsync(driverId);
+        return result;
+    }
+
+    /// <summary>
     /// Accept a booking
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
     [HttpPost("accept")]
-    public async Task AcceptBooking(BookingAcceptDto input)
+    public async Task AcceptBooking([FromBody] BookingAcceptDto input)
     {
         await _bookingsService.AcceptBookingAsync(input);
     }
@@ -64,7 +87,7 @@ public class BookingsController : ControllerBase
     /// <param name="input"></param>
     /// <returns></returns>
     [HttpPost("deny")]
-    public async Task DenyBooking(BookingDenyDto input)
+    public async Task DenyBooking([FromBody] BookingDenyDto input)
     {
         await _bookingsService.DenyBookingAsync(input);
     }
@@ -72,22 +95,22 @@ public class BookingsController : ControllerBase
     /// <summary>
     /// Complete a booking
     /// </summary>
-    /// <param name="id">Booking Id</param>
+    /// <param name="bookingId">Booking Id</param>
     /// <returns></returns>
-    [HttpPost("complete")]
-    public async Task CompleteBooking(long id)
+    [HttpPost("{bookingId}/complete")]
+    public async Task CompleteBooking([FromRoute] long bookingId)
     {
-        await _bookingsService.CompleteBookingAsync(id);
+        await _bookingsService.CompleteBookingAsync(bookingId);
     }
 
     /// <summary>
     /// Cancel a booking
     /// </summary>
-    /// <param name="id">Booking Id</param>
+    /// <param name="bookingId">Booking Id</param>
     /// <returns></returns>
-    [HttpPost("cancel")]
-    public async Task CancelBooking(long id)
+    [HttpPost("{bookingId}/cancel")]
+    public async Task CancelBooking([FromRoute] long bookingId)
     {
-        await _bookingsService.CancelBookingAsync(id);
+        await _bookingsService.CancelBookingAsync(bookingId);
     }
 }

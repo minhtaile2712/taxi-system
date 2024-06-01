@@ -12,7 +12,7 @@ public class BookingsService : IBookingsService
     private readonly IDriversService _driversService;
     private readonly IHubContext<TaxiHub> _hubContext;
 
-    private static double Radius;
+    private static double Radius = 1000;
 
     public BookingsService(
         TaxiSystemContext context,
@@ -36,6 +36,13 @@ public class BookingsService : IBookingsService
 
     public async Task<BookingDto?> CreateBookingAsync(BookingCreateDto input)
     {
+        var existingBookings = await _context.Bookings
+            .Where(b => b.CustomerId == input.CustomerId)
+            .Where(b => b.State == BookingState.Booked || b.State == BookingState.Accepted)
+            .ToListAsync();
+
+        if (existingBookings.Count != 0) return null;
+
         var customer = await _context.Customers.FindAsync(input.CustomerId);
         if (customer == null || customer.Location == null) return null;
 
@@ -49,6 +56,33 @@ public class BookingsService : IBookingsService
 
         _context.Bookings.Add(booking);
         await _context.SaveChangesAsync();
+
+        var result = MapBookingToDto(booking);
+        return result;
+    }
+
+    public async Task<BookingDto?> GetBookingByCustomerAsync(long customerId)
+    {
+        var booking = await _context.Bookings
+            .Where(b => b.CustomerId == customerId)
+            .Where(b => b.State == BookingState.Booked || b.State == BookingState.Accepted)
+            .FirstOrDefaultAsync();
+
+        if (booking == null) return null;
+
+        var result = MapBookingToDto(booking);
+        return result;
+    }
+
+    public async Task<BookingDto?> GetBookingByDriverAsync(long driverId)
+    {
+        var booking = await _context.Bookings
+            .Include(b => b.BookingDrivers)
+            .Where(b => b.BookingDrivers.Any(d => d.Id == driverId && (d.State == BookingDriverState.Notified || d.State == BookingDriverState.Accepted)))
+            .Where(b => b.State == BookingState.Booked || b.State == BookingState.Accepted)
+            .FirstOrDefaultAsync();
+
+        if (booking == null) return null;
 
         var result = MapBookingToDto(booking);
         return result;
@@ -127,7 +161,8 @@ public class BookingsService : IBookingsService
     {
         var result = new BookingDto
         {
-            Id = d.Id
+            Id = d.Id,
+            CustomerId = d.CustomerId,
         };
         return result;
     }
