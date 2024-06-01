@@ -23,7 +23,7 @@ type useHubReturns = {
 
 function useHub(url: string): useHubReturns {
   const [hubConnection] = useState<HubConnection>(
-    new HubConnectionBuilder().withUrl(url).build()
+    new HubConnectionBuilder().withUrl(url).withAutomaticReconnect().build()
   );
 
   useEffect(() => {
