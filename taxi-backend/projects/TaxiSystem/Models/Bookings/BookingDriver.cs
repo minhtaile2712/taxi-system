@@ -2,6 +2,8 @@
 
 public class BookingDriver
 {
+    public long Id { get; set; }
+
     public long BookingId { get; set; }
     public long DriverId { get; set; }
 
