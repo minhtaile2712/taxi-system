@@ -29,7 +29,7 @@ public class BookingsService : IBookingsService
         Radius = radius;
     }
 
-    public double GetRadius(double radius)
+    public double GetRadius()
     {
         return Radius;
     }

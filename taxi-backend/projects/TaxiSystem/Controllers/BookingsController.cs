@@ -30,9 +30,9 @@ public class BookingsController : ControllerBase
     /// </summary>
     /// <param name="radius"></param>
     [HttpGet("radius")]
-    public double GetRadius([FromBody] double radius)
+    public double GetRadius()
     {
-        return _bookingsService.GetRadius(radius);
+        return _bookingsService.GetRadius();
     }
 
     /// <summary>
