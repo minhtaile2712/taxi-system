@@ -56,4 +56,24 @@ public class Booking
 
         State = BookingState.Accepted;
     }
+
+    public long? Deny(long? deniedDriverId)
+    {
+        var driverIdToNotify = NotifyNextDriver(deniedDriverId);
+        if (driverIdToNotify == null)
+            State = BookingState.Denied;
+        return driverIdToNotify;
+    }
+
+    public void Complete()
+    {
+        State = BookingState.Completed;
+        BookingDrivers.ForEach(d => d.State = BookingDriverState.Completed);
+    }
+
+    public void Cancel()
+    {
+        State = BookingState.Cancelled;
+        BookingDrivers.ForEach(d => d.State = BookingDriverState.Completed);
+    }
 }

@@ -8,4 +8,6 @@ public interface IBookingsService
     Task<BookingDto?> CreateBookingAsync(BookingCreateDto input);
     Task AcceptBookingAsync(BookingAcceptDto input);
     Task DenyBookingAsync(BookingDenyDto input);
+    Task CompleteBookingAsync(long id);
+    Task CancelBookingAsync(long id);
 }

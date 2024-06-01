@@ -7,4 +7,5 @@ public enum BookingState
     Accepted,
     Denied,
     Completed,
+    Cancelled
 }

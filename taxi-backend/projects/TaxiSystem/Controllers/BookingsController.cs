@@ -26,14 +26,58 @@ public class BookingsController : ControllerBase
     }
 
     /// <summary>
-    /// Make a booking
+    /// Create a booking
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    [HttpPost]
-    public async Task<ActionResult<BookingDto>> MakeABooking(BookingCreateDto input)
+    [HttpPost("create")]
+    public async Task<ActionResult<BookingDto>> CreateBooking(BookingCreateDto input)
     {
         var result = await _bookingsService.CreateBookingAsync(input);
-        return (result == null) ? NotFound() : CreatedAtAction(nameof(MakeABooking), new { id = result.Id }, result);
+        return (result == null) ? NotFound() : CreatedAtAction(nameof(CreateBooking), new { id = result.Id }, result);
+    }
+
+    /// <summary>
+    /// Accept a booking
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    [HttpPost("accept")]
+    public async Task AcceptBooking(BookingAcceptDto input)
+    {
+        await _bookingsService.AcceptBookingAsync(input);
+    }
+
+    /// <summary>
+    /// Deny a booking
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    [HttpPost("deny")]
+    public async Task DenyBooking(BookingDenyDto input)
+    {
+        await _bookingsService.DenyBookingAsync(input);
+    }
+
+    /// <summary>
+    /// Complete a booking
+    /// </summary>
+    /// <param name="id">Booking Id</param>
+    /// <returns></returns>
+    [HttpPost("complete")]
+    public async Task CompleteBooking(long id)
+    {
+        await _bookingsService.CompleteBookingAsync(id);
+    }
+
+    /// <summary>
+    /// Cancel a booking
+    /// </summary>
+    /// <param name="id">Booking Id</param>
+    /// <returns></returns>
+    [HttpPost("cancel")]
+    public async Task CancelBooking(long id)
+    {
+        await _bookingsService.CancelBookingAsync(id);
     }
 }

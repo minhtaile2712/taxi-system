@@ -39,7 +39,6 @@ public class CustomersController : ControllerBase
         return result;
     }
 
-
     /// <summary>
     /// Get customer by Id
     /// </summary>
@@ -50,19 +49,6 @@ public class CustomersController : ControllerBase
     {
         var result = await _customersService.GetByIdAsync(id);
         return (result == null) ? NotFound() : result;
-    }
-
-    /// <summary>
-    /// Update customer location
-    /// </summary>
-    /// <param name="id"></param>
-    /// <param name="location"></param>
-    /// <returns></returns>
-    [HttpPost("{id}/location")]
-    public async Task<IActionResult> UpdateCustomerLocation(long id, LocationDto location)
-    {
-        var result = await _customersService.UpdateCustomerLocationAsync(id, location);
-        return (result == null) ? NotFound() : NoContent();
     }
 
     /// <summary>
@@ -78,14 +64,15 @@ public class CustomersController : ControllerBase
     }
 
     /// <summary>
-    /// Get customer by phone number
+    /// Update customer location
     /// </summary>
-    /// <param name="phoneNumber"></param>
+    /// <param name="id"></param>
+    /// <param name="location"></param>
     /// <returns></returns>
-    [HttpGet("by-phone/{phoneNumber}")]
-    public async Task<CustomerDto?> GetCustomerByPhone(string phoneNumber)
+    [HttpPost("{id}/location")]
+    public async Task<IActionResult> UpdateCustomerLocation(long id, LocationDto location)
     {
-        var result = await _customersService.GetCustomerByPhoneAsync(phoneNumber);
-        return result;
+        var result = await _customersService.UpdateCustomerLocationAsync(id, location);
+        return (result == null) ? NotFound() : NoContent();
     }
 }

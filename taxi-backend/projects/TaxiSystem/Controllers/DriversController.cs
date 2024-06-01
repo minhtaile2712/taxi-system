@@ -40,18 +40,6 @@ public class DriversController : ControllerBase
     }
 
     /// <summary>
-    /// Find nearby drivers
-    /// </summary>
-    /// <param name="input"></param>
-    /// <returns></returns>
-    [HttpGet("nearby")]
-    public async Task<ActionResult<List<DriverDto>>> FindNearbyDrivers([FromQuery] FindNearbyDriversDto input)
-    {
-        var result = await _driversService.FindNearbyDriversAsync(input);
-        return result;
-    }
-
-    /// <summary>
     /// Get driver by Id
     /// </summary>
     /// <param name="id"></param>
@@ -89,6 +77,18 @@ public class DriversController : ControllerBase
     }
 
     /// <summary>
+    /// Find nearby drivers
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    [HttpGet("nearby")]
+    public async Task<ActionResult<List<DriverDto>>> FindNearbyDrivers([FromQuery] FindNearbyDriversDto input)
+    {
+        var result = await _driversService.FindNearbyDriversAsync(input);
+        return result;
+    }
+
+    /// <summary>
     /// Update driver location
     /// </summary>
     /// <param name="id"></param>
@@ -99,18 +99,6 @@ public class DriversController : ControllerBase
     {
         var result = await _driversService.UpdateDriverLocationAsync(id, location);
         return (result == null) ? NotFound() : NoContent();
-    }
-
-    /// <summary>
-    /// Get driver by phone number
-    /// </summary>
-    /// <param name="phoneNumber"></param>
-    /// <returns></returns>
-    [HttpGet("by-phone/{phoneNumber}")]
-    public async Task<DriverDto?> GetDriverByPhone(string phoneNumber)
-    {
-        var result = await _driversService.GetDriverByPhoneAsync(phoneNumber);
-        return result;
     }
 
     /// <summary>

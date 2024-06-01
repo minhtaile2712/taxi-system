@@ -40,7 +40,7 @@ public class BookingsService : IBookingsService
         var booking = new Booking(customer, drivers);
 
         var driverIdToNotify = booking.NotifyNextDriver();
-        await _hubContext.Clients.All.SendAsync("NewBooking", booking.Id, driverIdToNotify);
+        await _hubContext.Clients.All.SendAsync("BookingCreatedToDriver", booking.Id, driverIdToNotify);
 
         _context.Bookings.Add(booking);
         await _context.SaveChangesAsync();
@@ -64,7 +64,7 @@ public class BookingsService : IBookingsService
         booking.Accept(driverId);
         await _context.SaveChangesAsync();
 
-        await _hubContext.Clients.All.SendAsync("AcceptBooking", booking.Id, booking.CustomerId, driverId);
+        await _hubContext.Clients.All.SendAsync("BookingAcceptedToCusTomer", booking.Id, booking.CustomerId, driverId);
     }
 
     public async Task DenyBookingAsync(BookingDenyDto input)
@@ -79,17 +79,43 @@ public class BookingsService : IBookingsService
         if (booking == null) return;
         if (!booking.BookingDrivers.Select(d => d.DriverId).Contains(driverId)) return;
 
-        var driverIdToNotify = booking.NotifyNextDriver(driverId);
-        if (driverIdToNotify == null)
-        {
-            booking.State = BookingState.Denied;
-            await _hubContext.Clients.All.SendAsync("BookingDenied", booking.Id, booking.CustomerId);
-            await _context.SaveChangesAsync();
-            return;
-        }
-
+        var driverIdToNotify = booking.Deny(driverId);
         await _context.SaveChangesAsync();
-        await _hubContext.Clients.All.SendAsync("NewBooking", booking.Id, driverIdToNotify);
+
+        if (driverIdToNotify == null)
+            await _hubContext.Clients.All.SendAsync("BookingDeniedToCustomer", booking.Id, booking.CustomerId);
+        else
+            await _hubContext.Clients.All.SendAsync("BookingCreatedToDriver", booking.Id, driverIdToNotify);
+    }
+
+    public async Task CompleteBookingAsync(long id)
+    {
+        var booking = await _context.Bookings
+            .Where(b => b.Id == id)
+            .Include(b => b.BookingDrivers)
+            .FirstOrDefaultAsync();
+
+        if (booking == null) return;
+
+        booking.Complete();
+        await _context.SaveChangesAsync();
+
+        await _hubContext.Clients.All.SendAsync("BookingCompleted", booking.Id);
+    }
+
+    public async Task CancelBookingAsync(long id)
+    {
+        var booking = await _context.Bookings
+            .Where(b => b.Id == id)
+            .Include(b => b.BookingDrivers)
+            .FirstOrDefaultAsync();
+
+        if (booking == null) return;
+
+        booking.Cancel();
+        await _context.SaveChangesAsync();
+
+        await _hubContext.Clients.All.SendAsync("BookingCancelled", booking.Id);
     }
 
     private static BookingDto MapBookingToDto(Booking d)

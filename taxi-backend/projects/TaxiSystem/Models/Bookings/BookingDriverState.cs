@@ -6,5 +6,6 @@ public enum BookingDriverState
     Queued,
     Notified,
     Accepted,
-    Denied
+    Denied,
+    Completed
 }
