@@ -1,54 +1,28 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import * as signalR from '@microsoft/signalr';
 
-interface Location {
-  latitude: number;
-  longitude: number;
-}
+const useSignalR = (hubUrl: string) => {
+    const connection = useRef<signalR.HubConnection | null>(null);
 
-interface UseSignalRResult {
-  location: Location | null;
-  error: string | null;
-  sendMessage: (user: string, message: string) => void;
-}
+    useEffect(() => {
+        connection.current = new signalR.HubConnectionBuilder()
+            .withUrl(hubUrl)
+            .withAutomaticReconnect()  
+            .build();
 
-const useSignalR = (hubUrl: string): UseSignalRResult => {
-  const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
-  const [location, setLocation] = useState<Location | null>(null);
-  const [error, setError] = useState<string | null>(null);
+        connection.current.start()
+            .then(() => console.log('SignalR Connected'))
+            .catch(err => console.error('SignalR Connection Error: ', err));
 
-  useEffect(() => {
-    const newConnection = new signalR.HubConnectionBuilder()
-      .withUrl(hubUrl)
-      .withAutomaticReconnect()
-      .build();
+        return () => {
+            if (connection.current) {
+                connection.current.stop().then(() => console.log('SignalR Disconnected'));
+            }
+        };
+    }, [hubUrl]);
 
-    setConnection(newConnection);
-  }, [hubUrl]);
-
-  useEffect(() => {
-    if (connection) {
-      connection
-        .start()
-        .then(() => {
-          console.log('Connected!');
-          connection.on('ReceiveMessage', (user: string, message: string) => {
-            console.log(`Message from ${user}: ${message}`);
-          });
-        })
-        .catch((e: Error) => setError(`Connection failed: ${e.message}`));
-    }
-  }, [connection]);
-
-  const sendMessage = (user: string, message: string) => {
-    if (connection) {
-      connection.send('SendMessage', user, message)
-        .catch((e: Error) => setError(`Send message failed: ${e.message}`));
-    }
-  };
-
-  return { location, error, sendMessage };
+    return connection.current;
 };
 
 export default useSignalR;

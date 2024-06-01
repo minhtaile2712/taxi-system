@@ -1,12 +1,7 @@
-import axios from 'axios';
+import { apiClient } from './apiClient';
 import { LocationDTO } from '../dtos/Driver.dto';
 
-const apiClient = axios.create({
-    baseURL: 'https://localhost:7283/api',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+
 //get all customers
     export const getCustomers = async () => {
         try {

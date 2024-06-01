@@ -1,5 +1,5 @@
 export interface DriverDTO {
-    id?: number; 
+    avatarUrl: string; 
     name: string;
     phone: string;
   }
