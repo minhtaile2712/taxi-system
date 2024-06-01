@@ -52,10 +52,11 @@ public class BookingsService : IBookingsService
         var booking = new Booking(customer, drivers);
 
         var driverIdToNotify = booking.NotifyNextDriver();
-        await _hubContext.Clients.All.SendAsync("BookingCreatedToDriver", booking.Id, driverIdToNotify);
 
         _context.Bookings.Add(booking);
         await _context.SaveChangesAsync();
+
+        await _hubContext.Clients.All.SendAsync("BookingCreatedToDriver", booking.Id, driverIdToNotify);
 
         var result = MapBookingToDto(booking);
         return result;
@@ -78,8 +79,8 @@ public class BookingsService : IBookingsService
     {
         var booking = await _context.Bookings
             .Include(b => b.BookingDrivers)
-            .Where(b => b.BookingDrivers.Any(d => d.Id == driverId && (d.State == BookingDriverState.Notified || d.State == BookingDriverState.Accepted)))
             .Where(b => b.State == BookingState.Booked || b.State == BookingState.Accepted)
+            .Where(b => b.BookingDrivers.Any(d => d.DriverId == driverId && (d.State == BookingDriverState.Notified || d.State == BookingDriverState.Accepted)))
             .FirstOrDefaultAsync();
 
         if (booking == null) return null;
@@ -163,6 +164,7 @@ public class BookingsService : IBookingsService
         {
             Id = d.Id,
             CustomerId = d.CustomerId,
+            IsAccepted = d.State == BookingState.Accepted
         };
         return result;
     }
