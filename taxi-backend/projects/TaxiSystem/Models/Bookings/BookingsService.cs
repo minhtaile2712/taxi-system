@@ -104,7 +104,7 @@ public class BookingsService : IBookingsService
         booking.Accept(driverId);
         await _context.SaveChangesAsync();
 
-        await _hubContext.Clients.All.SendAsync("BookingAcceptedToCusTomer", booking.Id, booking.CustomerId, driverId);
+        await _hubContext.Clients.All.SendAsync("BookingAcceptedToCustomer", booking.Id, booking.CustomerId, driverId);
     }
 
     public async Task DenyBookingAsync(BookingDenyDto input)

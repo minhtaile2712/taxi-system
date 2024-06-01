@@ -161,7 +161,7 @@ function BookingDialog(props: BookingDialogProps) {
   useEffect(() => {
     const handlers = [
       {
-        name: "BookingAcceptedToCusTomer",
+        name: "BookingAcceptedToCustomer",
         action: (
           acceptedBookingId: number,
           customerId: number,
