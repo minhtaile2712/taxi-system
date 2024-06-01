@@ -42,21 +42,6 @@ public class CustomersService : ICustomersService
         return MapCustomerToDto(customer);
     }
 
-    public async Task<CustomerDto?> UpdateCustomerLocationAsync(long id, LocationDto location)
-    {
-        CustomerDto? result = null;
-
-        var customer = await _context.Customers.FindAsync(id);
-        if (customer != null)
-        {
-            customer.Location = new Point(location.Long, location.Lat) { SRID = 4326 };
-            await _context.SaveChangesAsync();
-            result = MapCustomerToDto(customer);
-        }
-
-        return result;
-    }
-
     public async Task<CustomerDto?> DeleteByIdAsync(long id)
     {
         CustomerDto? result = null;
@@ -72,13 +57,19 @@ public class CustomersService : ICustomersService
         return result;
     }
 
-    public async Task<CustomerDto?> GetCustomerByPhoneAsync(string phoneNumber)
+    public async Task<CustomerDto?> UpdateCustomerLocationAsync(long id, LocationDto location)
     {
-        var customer = await _context.Customers
-            .Where(c => c.PhoneNumber == phoneNumber)
-            .FirstOrDefaultAsync();
-        if (customer == null) return null;
-        return MapCustomerToDto(customer);
+        CustomerDto? result = null;
+
+        var customer = await _context.Customers.FindAsync(id);
+        if (customer != null)
+        {
+            customer.Location = new Point(location.Long, location.Lat) { SRID = 4326 };
+            await _context.SaveChangesAsync();
+            result = MapCustomerToDto(customer);
+        }
+
+        return result;
     }
 
     private static CustomerDto MapCustomerToDto(Customer d)

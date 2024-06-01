@@ -20,20 +20,74 @@ public class BookingsController : ControllerBase
     /// </summary>
     /// <param name="radius"></param>
     [HttpPost("radius")]
-    public void SetDistance([FromBody] double radius)
+    public void SetRadius([FromBody] double radius)
     {
-        _bookingsService.SetDistance(radius);
+        _bookingsService.SetRadius(radius);
     }
 
     /// <summary>
-    /// Make a booking
+    /// Get booking radius
+    /// </summary>
+    /// <param name="radius"></param>
+    [HttpGet("radius")]
+    public double GetRadius([FromBody] double radius)
+    {
+        return _bookingsService.GetRadius(radius);
+    }
+
+    /// <summary>
+    /// Create a booking
     /// </summary>
     /// <param name="input"></param>
     /// <returns></returns>
-    [HttpPost]
-    public async Task<ActionResult<BookingDto>> MakeABooking(BookingMakeDto input)
+    [HttpPost("create")]
+    public async Task<ActionResult<BookingDto>> CreateBooking(BookingCreateDto input)
     {
-        var result = await _bookingsService.MakeABookingAsync(input);
-        return (result == null) ? NotFound() : CreatedAtAction(nameof(MakeABooking), new { id = result.Id }, result);
+        var result = await _bookingsService.CreateBookingAsync(input);
+        return (result == null) ? NotFound() : CreatedAtAction(nameof(CreateBooking), new { id = result.Id }, result);
+    }
+
+    /// <summary>
+    /// Accept a booking
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    [HttpPost("accept")]
+    public async Task AcceptBooking(BookingAcceptDto input)
+    {
+        await _bookingsService.AcceptBookingAsync(input);
+    }
+
+    /// <summary>
+    /// Deny a booking
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    [HttpPost("deny")]
+    public async Task DenyBooking(BookingDenyDto input)
+    {
+        await _bookingsService.DenyBookingAsync(input);
+    }
+
+    /// <summary>
+    /// Complete a booking
+    /// </summary>
+    /// <param name="id">Booking Id</param>
+    /// <returns></returns>
+    [HttpPost("complete")]
+    public async Task CompleteBooking(long id)
+    {
+        await _bookingsService.CompleteBookingAsync(id);
+    }
+
+    /// <summary>
+    /// Cancel a booking
+    /// </summary>
+    /// <param name="id">Booking Id</param>
+    /// <returns></returns>
+    [HttpPost("cancel")]
+    public async Task CancelBooking(long id)
+    {
+        await _bookingsService.CancelBookingAsync(id);
     }
 }

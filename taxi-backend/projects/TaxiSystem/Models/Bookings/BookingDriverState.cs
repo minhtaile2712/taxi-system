@@ -1,11 +1,11 @@
 ﻿namespace TaxiSystem.Models.Bookings;
 
-public enum BookingState
+public enum BookingDriverState
 {
     None = 0,
-    Booked,
+    Queued,
+    Notified,
     Accepted,
     Denied,
-    Completed,
-    Cancelled
+    Completed
 }

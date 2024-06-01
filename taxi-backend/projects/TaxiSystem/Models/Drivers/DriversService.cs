@@ -113,15 +113,6 @@ public class DriversService : IDriversService
         return result;
     }
 
-    public async Task<DriverDto?> GetDriverByPhoneAsync(string phoneNumber)
-    {
-        var driver = await _context.Drivers
-            .Where(c => c.PhoneNumber == phoneNumber)
-            .FirstOrDefaultAsync();
-        if (driver == null) return null;
-        return MapDriverToDto(driver);
-    }
-
     public Task<double[]> Test()
     {
         var pointA = new Point(106.64964908560823, 10.80184768485948) { SRID = 4326 };
