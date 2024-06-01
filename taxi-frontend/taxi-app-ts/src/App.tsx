@@ -1,13 +1,16 @@
 import "./App.css";
 
-import CustomerApp from "./CustomerApp";
-import DriverApp from "./DriverApp";
-
 function App() {
   return (
     <>
-      <CustomerApp />
-      <DriverApp />
+      <ul>
+        <li>
+          <a href={`/customer`}>Customer</a>
+        </li>
+        <li>
+          <a href={`/driver`}>Driver</a>
+        </li>
+      </ul>
     </>
   );
 }
