@@ -5,7 +5,7 @@ namespace TaxiSystem.Models.Bookings;
 public interface IBookingsService
 {
     void SetRadius(double radius);
-    double GetRadius(double radius);
+    double GetRadius();
     Task<BookingDto?> CreateBookingAsync(BookingCreateDto input);
     Task AcceptBookingAsync(BookingAcceptDto input);
     Task DenyBookingAsync(BookingDenyDto input);
