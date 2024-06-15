@@ -1,9 +1,21 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import Button from "@mui/material/Button";
-import DialogTitle from "@mui/material/DialogTitle";
-import Dialog from "@mui/material/Dialog";
-import Typography from "@mui/material/Typography";
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  Dialog,
+  DialogTitle,
+  IconButton,
+  Link,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+
+import RefreshIcon from "@mui/icons-material/Refresh";
+
 import useHub from "./useHub";
 
 const baseUrl = "https://localhost:7283";
@@ -89,30 +101,56 @@ export default function CustomerApp({ customerId }: { customerId: number }) {
 
   return (
     <>
-      <div>
-        <label>
-          Lat Long
-          <input
-            type="text"
+      <Paper elevation={3} sx={{ width: "100%", padding: 2 }}>
+        <Stack alignItems="center" justifyContent="center" spacing={2}>
+          <Typography variant="h6">Location override</Typography>
+          <Typography variant="caption">
+            In Google Maps, place your cursor at point of interest, right-click
+            then select the first row on the pop-up menu.
+          </Typography>
+          <TextField
+            variant="outlined"
+            fullWidth
+            size="small"
+            label="Lat Long"
             value={latLongInput}
             onChange={(e) => setLatLongInput(e.target.value)}
           />
-        </label>
-        <div>
-          <button onClick={sendLocation}>Send location</button>
-        </div>
-      </div>
+          <Button variant="contained" onClick={sendLocation}>
+            Set Coordinates
+          </Button>
+        </Stack>
+      </Paper>
+
+      <Paper elevation={3} sx={{ width: "100%", padding: 2 }}>
+        <Stack alignItems="center" spacing={2}>
+          <Typography variant="h6">Current location</Typography>
+
+          <Box sx={{ width: "100%" }}>
+            <Stack direction="row" justifyContent="space-between">
+              <Typography>Longitude</Typography>
+              <Typography>{currentLocation.longitude}</Typography>
+            </Stack>
+            <Stack direction="row" justifyContent="space-between">
+              <Typography>Latitude</Typography>
+              <Typography>{currentLocation.latitude}</Typography>
+            </Stack>
+          </Box>
+
+          <Button
+            variant="contained"
+            startIcon={<RefreshIcon />}
+            onClick={getCustomerInfo}
+          >
+            Refresh
+          </Button>
+        </Stack>
+      </Paper>
 
       <div>
-        <div>Current Longitude: {currentLocation.longitude}</div>
-        <div>Current Latitude: {currentLocation.latitude}</div>
-        <button onClick={getCustomerInfo}>
-          Get current location in system
-        </button>
-      </div>
-
-      <div>
-        <button onClick={newBooking}>Book a ride!</button>
+        <Button variant="contained" onClick={newBooking}>
+          Book a ride
+        </Button>
       </div>
 
       <BookingDialog
