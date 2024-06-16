@@ -28,6 +28,7 @@ Run client app (for customers and drivers):
 
 ```
 cd .\taxi-frontend\taxi-app-ts
+npm install
 npm run dev
 ```
 

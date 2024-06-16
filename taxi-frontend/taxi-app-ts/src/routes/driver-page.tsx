@@ -1,6 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
 
+import { Box, Button, Stack, TextField, Typography } from "@mui/material";
+import LogoutIcon from "@mui/icons-material/Logout";
+
 import DriverApp from "../DriverApp";
 
 const baseUrl = "https://localhost:7283";
@@ -27,34 +30,60 @@ export default function DriverPage() {
   };
 
   return (
-    <div>
-      <h3>Taxi App for Drivers</h3>
+    <Stack
+      alignItems="center"
+      justifyContent="center"
+      sx={{ height: "100%" }}
+      spacing={2}
+      padding={2}
+    >
+      <Typography align="center" variant="h4">
+        Taxi App
+      </Typography>
+      <Typography variant="caption">Welcome to Taxi App for driver!</Typography>
       {driverId === null ? (
         <>
-          <div>Phone number</div>
+          <Typography>Enter your credential</Typography>
           <div>
-            <input
-              type="text"
+            <TextField
+              label="Phone number"
+              variant="outlined"
               value={phoneNumberInput}
               onChange={(e) => setPhoneNumberInput(e.target.value)}
             />
           </div>
           <div>
-            <button onClick={login}>Login</button>
+            <Button variant="contained" onClick={login}>
+              Continue
+            </Button>
           </div>
         </>
       ) : (
         <>
-          <div>
-            Logged in as driver {driverId} ({phoneNumberInput})
-          </div>
-          <div>
-            <button onClick={logout}>Logout</button>
-          </div>
+          <Stack direction="row" alignItems="center" spacing={2} width="100%">
+            <Box flexGrow={1}>
+              <Stack direction="row" justifyContent="space-between">
+                <Typography>Driver ID:</Typography>
+                <Typography>{driverId}</Typography>
+              </Stack>
+              <Stack direction="row" justifyContent="space-between">
+                <Typography>Phone number:</Typography>
+                <Typography>{phoneNumberInput}</Typography>
+              </Stack>
+            </Box>
+
+            <Button
+              variant="contained"
+              startIcon={<LogoutIcon />}
+              onClick={logout}
+            >
+              Logout
+            </Button>
+          </Stack>
 
           <DriverApp driverId={driverId} />
         </>
       )}
-    </div>
+    </Stack>
   );
 }
