@@ -33,7 +33,7 @@ function App() {
           <Button component={Link} href="/driver">
             Driver
           </Button>
-          <Button component={Link} href="/driver">
+          <Button component={Link} href="/center">
             Center
           </Button>
         </ButtonGroup>

@@ -1,15 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-import {
-  Box,
-  Button,
-  ButtonGroup,
-  Link,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 
 import CustomerApp from "../CustomerApp";
@@ -90,8 +82,6 @@ export default function CustomerPage() {
               Logout
             </Button>
           </Stack>
-
-          <div></div>
 
           <CustomerApp customerId={customerId} />
         </>

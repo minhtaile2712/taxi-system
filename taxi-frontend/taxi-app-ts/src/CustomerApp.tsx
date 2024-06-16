@@ -3,17 +3,13 @@ import axios from "axios";
 import {
   Box,
   Button,
-  ButtonGroup,
   Dialog,
   DialogTitle,
-  IconButton,
-  Link,
   Paper,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
-
 import RefreshIcon from "@mui/icons-material/Refresh";
 
 import useHub from "./useHub";
@@ -273,21 +269,30 @@ function BookingDialog(props: BookingDialogProps) {
   return (
     <Dialog onClose={handleClose} open={open}>
       <DialogTitle>Created booking</DialogTitle>
-      <Typography>Booking Id: {bookingId}</Typography>
-      {isWaiting ? (
-        <>
-          <Typography>Waiting for system...</Typography>
-          <Button onClick={handleCancel}>Cancel booking</Button>
-        </>
-      ) : (
-        <>
-          <Typography>Booking is accepted</Typography>
-          <Typography>
-            Driver with phone number: {driverPhoneNumber} is on the way.
-          </Typography>
-          <Button onClick={handleComplete}>Complete this booking</Button>
-        </>
-      )}
+      <Box padding={2}>
+        <Stack direction="row" justifyContent="space-between">
+          <Typography>Booking Id:</Typography>
+          <Typography>{bookingId}</Typography>
+        </Stack>
+        {isWaiting ? (
+          <>
+            <Typography>Waiting for response...</Typography>
+            <Button variant="contained" onClick={handleCancel}>
+              Cancel booking
+            </Button>
+          </>
+        ) : (
+          <>
+            <Typography>Booking is accepted</Typography>
+            <Typography>
+              Driver with phone number: {driverPhoneNumber} is on the way.
+            </Typography>
+            <Button variant="contained" onClick={handleComplete}>
+              Complete this booking
+            </Button>
+          </>
+        )}
+      </Box>
     </Dialog>
   );
 }

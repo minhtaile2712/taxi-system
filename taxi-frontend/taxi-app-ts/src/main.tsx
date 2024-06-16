@@ -15,6 +15,7 @@ import App from "./App.tsx";
 import ErrorPage from "./routes/error-page.tsx";
 import CustomerPage from "./routes/customer-page.tsx";
 import DriverPage from "./routes/driver-page.tsx";
+import CenterPage from "./routes/center-page.tsx";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
   {
     path: "driver",
     element: <DriverPage />,
+  },
+  {
+    path: "center",
+    element: <CenterPage />,
   },
 ]);
 
